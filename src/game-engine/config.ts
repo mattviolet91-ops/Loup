@@ -19,6 +19,18 @@ export const DEFAULT_OPTIONS: GameOptions = {
   highContrast: false,
 };
 
+/** Nombre de joueurs utilisé par le raccourci « partie test ». */
+export const TEST_GAME_PLAYER_COUNT = 8;
+
+/**
+ * Prénoms générés automatiquement (« Joueur 1 », « Joueur 2 »…) pour essayer
+ * l'application sans avoir à saisir de vrais prénoms. Ils respectent les
+ * mêmes contraintes que des prénoms saisis à la main : non vides et uniques.
+ */
+export function generatePlayerNames(count: number): string[] {
+  return Array.from({ length: count }, (_, i) => `Joueur ${i + 1}`);
+}
+
 /** Répartition par défaut raisonnable pour un nombre de joueurs donné. */
 export function defaultRoleCountsFor(playerCount: number): RoleCounts {
   const wolves = Math.max(1, Math.min(maxWolvesFor(playerCount), Math.round(playerCount / 4)));

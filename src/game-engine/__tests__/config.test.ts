@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { validateGameConfig, validatePlayerNames, createDefaultConfig, maxWolvesFor } from '../config';
+import {
+  validateGameConfig,
+  validatePlayerNames,
+  createDefaultConfig,
+  generatePlayerNames,
+  maxWolvesFor,
+  MIN_PLAYERS,
+  MAX_PLAYERS,
+  TEST_GAME_PLAYER_COUNT,
+} from '../config';
 
 describe('validateGameConfig', () => {
   it('accepte une configuration cohérente', () => {
@@ -91,5 +100,24 @@ describe('validatePlayerNames', () => {
   it('refuse un nombre de prénoms incorrect', () => {
     const result = validatePlayerNames(['Thomas', 'Lucas'], 3);
     expect(result.valid).toBe(false);
+  });
+});
+
+describe('generatePlayerNames (partie test)', () => {
+  it('produit des prénoms valides pour toutes les tailles de partie', () => {
+    for (let n = MIN_PLAYERS; n <= MAX_PLAYERS; n++) {
+      const names = generatePlayerNames(n);
+      expect(names).toHaveLength(n);
+      const result = validatePlayerNames(names, n);
+      expect(result.valid, `n=${n}: ${result.errors.join(' | ')}`).toBe(true);
+    }
+  });
+
+  it('permet de lancer une partie test valide sans aucune saisie', () => {
+    const config = createDefaultConfig(TEST_GAME_PLAYER_COUNT);
+    expect(validateGameConfig(config).valid).toBe(true);
+    expect(validatePlayerNames(generatePlayerNames(TEST_GAME_PLAYER_COUNT), TEST_GAME_PLAYER_COUNT).valid).toBe(
+      true,
+    );
   });
 });

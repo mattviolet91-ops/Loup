@@ -2,6 +2,7 @@ import { Button } from '../common/Button';
 
 interface HomeScreenProps {
   onNewGame: () => void;
+  onTestGame: () => void;
   onRules: () => void;
   onHowTo: () => void;
   onSettings: () => void;
@@ -9,7 +10,15 @@ interface HomeScreenProps {
   onResume: () => void;
 }
 
-export function HomeScreen({ onNewGame, onRules, onHowTo, onSettings, hasSavedGame, onResume }: HomeScreenProps) {
+export function HomeScreen({
+  onNewGame,
+  onTestGame,
+  onRules,
+  onHowTo,
+  onSettings,
+  hasSavedGame,
+  onResume,
+}: HomeScreenProps) {
   return (
     <div className="screen" style={{ justifyContent: 'center' }}>
       <div className="stack-lg" style={{ textAlign: 'center' }}>
@@ -32,6 +41,7 @@ export function HomeScreen({ onNewGame, onRules, onHowTo, onSettings, hasSavedGa
           <Button variant={hasSavedGame ? 'secondary' : 'primary'} onClick={onNewGame}>
             🌙 Nouvelle partie
           </Button>
+          <Button onClick={onTestGame}>🧪 Partie test — sans prénoms</Button>
           <Button onClick={onRules}>📜 Règles</Button>
           <Button onClick={onHowTo}>❓ Comment jouer</Button>
           <Button onClick={onSettings}>⚙️ Paramètres</Button>

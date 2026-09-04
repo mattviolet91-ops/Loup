@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useGame } from './hooks/useGame';
 import { loadPreferredOptions, savePreferredOptions } from './utils/settingsStorage';
 import { NARRATION } from './game-engine/narrator';
+import { createDefaultConfig, generatePlayerNames, TEST_GAME_PLAYER_COUNT } from './game-engine/config';
 import type { GameOptions } from './game-engine/types';
 
 import { SplashScreen } from './components/common/SplashScreen';
@@ -69,6 +70,15 @@ function GameApp() {
     dispatch({ type: 'UPDATE_OPTIONS', options: patch });
   }
 
+  /** Lance immédiatement une partie jouable avec des prénoms générés. */
+  function startTestGame() {
+    dispatch({
+      type: 'NEW_GAME',
+      config: { ...createDefaultConfig(TEST_GAME_PLAYER_COUNT), options: loadPreferredOptions() },
+      playerNames: generatePlayerNames(TEST_GAME_PLAYER_COUNT),
+    });
+  }
+
   function previewNarratorVoice() {
     narrator.preview(NARRATION.nightFalls(1));
   }
@@ -125,6 +135,7 @@ function GameApp() {
       <div className="app-shell">
         <HomeScreen
           onNewGame={() => setMetaView('setup')}
+          onTestGame={startTestGame}
           onRules={() => setMetaView('rules')}
           onHowTo={() => setMetaView('howto')}
           onSettings={() => setMetaView('settings')}

@@ -28,6 +28,10 @@ nuit et de jour, votes, éliminations et conditions de victoire — le tout
 - **Révélation secrète des rôles** en mode "passe-le-téléphone" : chaque
   joueur consulte uniquement son propre rôle, plein écran, masqué
   automatiquement ensuite.
+- **Partie test en un clic** : un bouton de l'accueil lance immédiatement une
+  partie à 8 joueurs avec des prénoms générés ("Joueur 1", "Joueur 2"…), pour
+  essayer l'application sans rien saisir. L'écran de saisie propose aussi un
+  remplissage automatique.
 - **Vote secret** joueur par joueur, avec gestion des égalités, du Bouc
   Émissaire et de l'Idiot du Village.
 - **Sauvegarde locale automatique** : une partie interrompue (page actualisée,

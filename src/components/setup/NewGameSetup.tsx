@@ -4,6 +4,7 @@ import {
   MAX_PLAYERS,
   createDefaultConfig,
   defaultRoleCountsFor,
+  generatePlayerNames,
   maxWolvesFor,
   validateGameConfig,
   validatePlayerNames,
@@ -111,6 +112,9 @@ export function NewGameSetup({ onCancel, onCreate }: NewGameSetupProps) {
           <div className="stack">
             <Button variant="primary" disabled={!namesValidation.valid} onClick={() => setStep('ROLES')}>
               Suivant
+            </Button>
+            <Button onClick={() => setNames(generatePlayerNames(playerCount))}>
+              🧪 Remplir automatiquement (partie test)
             </Button>
             <Button onClick={() => setStep('COUNT')}>Retour</Button>
           </div>
