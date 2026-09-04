@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useGame } from './hooks/useGame';
 import { loadPreferredOptions, savePreferredOptions } from './utils/settingsStorage';
+import { NARRATION } from './game-engine/narrator';
 import type { GameOptions } from './game-engine/types';
 
 import { SplashScreen } from './components/common/SplashScreen';
@@ -35,17 +36,19 @@ export default function App() {
   return (
     <>
       <GameApp />
-      {showSplash && <SplashScreen />}
+      {showSplash && <SplashScreen onSkip={() => setShowSplash(false)} />}
     </>
   );
 }
 
 function GameApp() {
-  const { state, dispatch, narrator, lastNarrationText, hasResumableGame, resumeSavedGame, resetToHome } = useGame();
+  // Préférences utilisateur : elles pilotent aussi le narrateur hors partie.
+  const [homeOptions, setHomeOptions] = useState<GameOptions>(() => loadPreferredOptions());
+  const { state, dispatch, narrator, lastNarrationText, hasResumableGame, resumeSavedGame, resetToHome } =
+    useGame(homeOptions);
   const [metaView, setMetaView] = useState<MetaView>('home');
   const [showSummary, setShowSummary] = useState(false);
   const [inGameSettingsOpen, setInGameSettingsOpen] = useState(false);
-  const [homeOptions, setHomeOptions] = useState<GameOptions>(() => loadPreferredOptions());
 
   const activeOptions = state?.config.options ?? homeOptions;
 
@@ -64,6 +67,10 @@ function GameApp() {
 
   function updateGameOptions(patch: Partial<GameOptions>) {
     dispatch({ type: 'UPDATE_OPTIONS', options: patch });
+  }
+
+  function previewNarratorVoice() {
+    narrator.preview(NARRATION.nightFalls(1));
   }
 
   function goHome() {
@@ -106,6 +113,8 @@ function GameApp() {
           <SettingsScreen
             options={homeOptions}
             voices={narrator.voices}
+            activeVoice={narrator.activeVoice}
+            onPreviewVoice={previewNarratorVoice}
             onChange={updateHomeOptions}
             onBack={() => setMetaView('home')}
           />
@@ -132,6 +141,8 @@ function GameApp() {
         <SettingsScreen
           options={state.config.options}
           voices={narrator.voices}
+          activeVoice={narrator.activeVoice}
+          onPreviewVoice={previewNarratorVoice}
           onChange={updateGameOptions}
           onBack={() => setInGameSettingsOpen(false)}
         />

@@ -2,7 +2,8 @@ import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { gameReducer, type GameAction } from '../game-engine/engine';
 import { loadGameState, saveGameState, clearGameState, hasSavedGame } from '../game-engine/persistence';
 import { savePreferredOptions } from '../utils/settingsStorage';
-import type { GameState } from '../game-engine/types';
+import { DEFAULT_OPTIONS } from '../game-engine/config';
+import type { GameOptions, GameState } from '../game-engine/types';
 import { useNarrator } from './useNarrator';
 
 export interface UseGameResult {
@@ -19,17 +20,24 @@ export interface UseGameResult {
  * Point d'entrée unique entre l'UI et le moteur de jeu : gère le state du
  * moteur, la sauvegarde/reprise locale, et la narration vocale associée à la
  * file de narration produite par le moteur.
+ *
+ * `fallbackOptions` sont les préférences de l'utilisateur, utilisées tant
+ * qu'aucune partie n'est en cours (écran d'accueil, réglages) : sans elles, le
+ * narrateur parlerait avec les réglages d'usine au lieu de ceux choisis.
  */
-export function useGame(): UseGameResult {
+export function useGame(fallbackOptions: GameOptions): UseGameResult {
   const [state, dispatch] = useReducer(gameReducer, null);
   const [hasResumableGame, setHasResumableGame] = useState(() => hasSavedGame());
 
-  const options = state?.config.options;
+  const gameOptions = state?.config.options;
+  const options = gameOptions ?? fallbackOptions;
+  // Les `??` couvrent aussi les parties sauvegardées avant l'ajout d'une option.
   const narrator = useNarrator({
-    enabled: options?.narrationEnabled ?? true,
-    volume: options?.narrationVolume ?? 1,
-    rate: options?.narrationRate ?? 1,
-    voiceURI: options?.narrationVoiceURI ?? null,
+    enabled: options.narrationEnabled ?? DEFAULT_OPTIONS.narrationEnabled,
+    volume: options.narrationVolume ?? DEFAULT_OPTIONS.narrationVolume,
+    rate: options.narrationRate ?? DEFAULT_OPTIONS.narrationRate,
+    pitch: options.narrationPitch ?? DEFAULT_OPTIONS.narrationPitch,
+    voiceURI: options.narrationVoiceURI ?? DEFAULT_OPTIONS.narrationVoiceURI,
   });
 
   const narratorRef = useRef(narrator);
@@ -40,9 +48,11 @@ export function useGame(): UseGameResult {
     saveGameState(state);
   }, [state]);
 
+  // Seuls les réglages modifiés en cours de partie sont à persister ici : ceux
+  // de l'accueil le sont déjà au moment où l'utilisateur les change.
   useEffect(() => {
-    if (options) savePreferredOptions(options);
-  }, [options]);
+    if (gameOptions) savePreferredOptions(gameOptions);
+  }, [gameOptions]);
 
   const [lastNarrationText, setLastNarrationText] = useState<string | null>(null);
   const spokenIds = useRef<Set<string>>(new Set());

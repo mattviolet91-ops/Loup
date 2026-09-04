@@ -4,6 +4,9 @@ import { Button } from '../common/Button';
 interface SettingsScreenProps {
   options: GameOptions;
   voices: SpeechSynthesisVoice[];
+  /** Voix réellement utilisée (choisie automatiquement si aucune n'est imposée). */
+  activeVoice: SpeechSynthesisVoice | null;
+  onPreviewVoice: () => void;
   onChange: (patch: Partial<GameOptions>) => void;
   onBack: () => void;
 }
@@ -27,7 +30,14 @@ function Toggle({ label, on, onToggle }: { label: string; on: boolean; onToggle:
   );
 }
 
-export function SettingsScreen({ options, voices, onChange, onBack }: SettingsScreenProps) {
+export function SettingsScreen({
+  options,
+  voices,
+  activeVoice,
+  onPreviewVoice,
+  onChange,
+  onBack,
+}: SettingsScreenProps) {
   const frenchVoices = voices.filter((v) => v.lang.toLowerCase().startsWith('fr'));
   const voiceList = frenchVoices.length > 0 ? frenchVoices : voices;
 
@@ -75,6 +85,22 @@ export function SettingsScreen({ options, voices, onChange, onBack }: SettingsSc
               onChange={(e) => onChange({ narrationRate: Number(e.target.value) })}
             />
           </div>
+          <div className="field">
+            <label htmlFor="pitch">
+              Grave ou aiguë ({options.narrationPitch.toFixed(2)}) — plus c'est grave, plus l'ambiance est
+              inquiétante
+            </label>
+            <input
+              id="pitch"
+              className="slider"
+              type="range"
+              min={0.4}
+              max={1.6}
+              step={0.05}
+              value={options.narrationPitch}
+              onChange={(e) => onChange({ narrationPitch: Number(e.target.value) })}
+            />
+          </div>
           {voiceList.length > 0 && (
             <div className="field">
               <label htmlFor="voice">Voix</label>
@@ -91,15 +117,22 @@ export function SettingsScreen({ options, voices, onChange, onBack }: SettingsSc
                   padding: '0 12px',
                 }}
               >
-                <option value="">Voix par défaut du navigateur</option>
+                <option value="">
+                  {activeVoice ? `Automatique (${activeVoice.name})` : 'Automatique'}
+                </option>
                 {voiceList.map((v) => (
                   <option key={v.voiceURI} value={v.voiceURI}>
                     {v.name} ({v.lang})
                   </option>
                 ))}
               </select>
+              <p className="footer-note" style={{ margin: '4px 0 0', textAlign: 'left' }}>
+                En automatique, l'application choisit la voix française la plus grave et la plus naturelle
+                disponible sur cet appareil.
+              </p>
             </div>
           )}
+          <Button onClick={onPreviewVoice}>🎧 Écouter le narrateur</Button>
         </section>
 
         <section className="card stack">

@@ -11,7 +11,9 @@ export const DEFAULT_OPTIONS: GameOptions = {
   discussionDurationSeconds: 180,
   narrationEnabled: true,
   narrationVolume: 1,
-  narrationRate: 1,
+  // Débit légèrement ralenti et voix plus grave : diction de conteur, pas de GPS.
+  narrationRate: 0.92,
+  narrationPitch: 0.8,
   narrationVoiceURI: null,
   animationsEnabled: true,
   highContrast: false,

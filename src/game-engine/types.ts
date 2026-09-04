@@ -163,6 +163,8 @@ export interface GameOptions {
   narrationEnabled: boolean;
   narrationVolume: number;
   narrationRate: number;
+  /** Hauteur de la voix (0 = très grave, 2 = très aiguë). */
+  narrationPitch: number;
   narrationVoiceURI: string | null;
   animationsEnabled: boolean;
   highContrast: boolean;

@@ -99,6 +99,7 @@ export function NightPhase({ state, dispatch, narrator, lastNarrationText, onUpd
         isSpeaking={narrator.isSpeaking}
         onToggleEnabled={() => onUpdateOptions({ narrationEnabled: !state.config.options.narrationEnabled })}
         onRepeat={narrator.repeatLast}
+        onSkip={narrator.stop}
       />
       {kind === 'VOLEUR' && <VoleurScreen state={state} dispatch={dispatch} />}
       {kind === 'CUPIDON' && <CupidonScreen state={state} dispatch={dispatch} />}

@@ -11,8 +11,12 @@ nuit et de jour, votes, éliminations et conditions de victoire — le tout
 - **Maître du jeu automatique** : l'application guide toute la partie (nuit,
   réveils dans l'ordre, jour, discussion, vote, résolution, victoire).
 - **Narrateur vocal** (Web Speech API) : phrases d'ambiance à chaque étape,
-  volume/vitesse/voix réglables, coupure du son, répétition de la dernière
-  annonce.
+  écrites dans un registre de conteur de veillée. La voix française la plus
+  grave et la plus naturelle de l'appareil est sélectionnée automatiquement,
+  avec un débit ralenti et une hauteur abaissée par défaut. Volume, vitesse,
+  hauteur (grave ↔ aiguë) et voix sont réglables, avec un bouton d'écoute dans
+  les paramètres. En jeu : **Passer** la narration en cours, la répéter, ou
+  couper le son.
 - **13 rôles jouables**, chacun avec une vraie mécanique de jeu (pas de simple
   carte décorative) : Villageois, Loup-Garou, Voyante, Sorcière, Chasseur,
   Cupidon, Petite Fille, Voleur, Salvateur, Ancien, Idiot du Village, Bouc

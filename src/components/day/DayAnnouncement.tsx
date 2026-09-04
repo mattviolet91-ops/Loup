@@ -39,6 +39,7 @@ export function DayAnnouncement({
         isSpeaking={narrator.isSpeaking}
         onToggleEnabled={() => onUpdateOptions({ narrationEnabled: !state.config.options.narrationEnabled })}
         onRepeat={narrator.repeatLast}
+        onSkip={narrator.stop}
       />
 
       <div className="stack-lg">
