@@ -3,6 +3,7 @@ import { useGame } from './hooks/useGame';
 import { loadPreferredOptions, savePreferredOptions } from './utils/settingsStorage';
 import type { GameOptions } from './game-engine/types';
 
+import { SplashScreen } from './components/common/SplashScreen';
 import { HomeScreen } from './components/home/HomeScreen';
 import { NewGameSetup } from './components/setup/NewGameSetup';
 import { RulesScreen } from './components/rules/RulesScreen';
@@ -21,7 +22,25 @@ import { Summary } from './components/summary/Summary';
 
 type MetaView = 'home' | 'setup' | 'rules' | 'howto' | 'settings';
 
+const SPLASH_DURATION_MS = 2600;
+
 export default function App() {
+  const [showSplash, setShowSplash] = useState(true);
+
+  useEffect(() => {
+    const timeout = window.setTimeout(() => setShowSplash(false), SPLASH_DURATION_MS);
+    return () => window.clearTimeout(timeout);
+  }, []);
+
+  return (
+    <>
+      <GameApp />
+      {showSplash && <SplashScreen />}
+    </>
+  );
+}
+
+function GameApp() {
   const { state, dispatch, narrator, lastNarrationText, hasResumableGame, resumeSavedGame, resetToHome } = useGame();
   const [metaView, setMetaView] = useState<MetaView>('home');
   const [showSummary, setShowSummary] = useState(false);
