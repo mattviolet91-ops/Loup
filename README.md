@@ -160,17 +160,34 @@ application native.
 
 Le projet est prêt pour un déploiement statique gratuit :
 
-- **GitHub Pages** : un workflow (`.github/workflows/deploy-pages.yml`) build
-  et déploie automatiquement à chaque push sur `main`. Activez au préalable
-  *Settings → Pages → Source : GitHub Actions* sur le dépôt.
+- **GitHub Pages** (configuration par défaut) : le workflow
+  `.github/workflows/deploy-pages.yml` construit (`npm ci` puis
+  `npm run build`) et publie le dossier `dist` à chaque push sur `main`, ainsi
+  qu'à la demande (`workflow_dispatch`). Il utilise `actions/configure-pages`
+  (avec `enablement: true`, qui active Pages automatiquement),
+  `actions/upload-pages-artifact` et `actions/deploy-pages`, avec les
+  permissions `pages: write` et `id-token: write`.
+  L'application est alors accessible sur
+  **<https://mattviolet91-ops.github.io/Loup/>**.
 - **Netlify** : `netlify.toml` fourni (`npm run build`, dossier `dist`) — il
   suffit de connecter le dépôt sur [netlify.com](https://netlify.com).
 - **Vercel** : aucune configuration nécessaire, Vercel détecte
   automatiquement un projet Vite (`npm run build`, dossier `dist`).
 
-Pour un déploiement sur un sous-chemin (ex. `utilisateur.github.io/depot/`),
-adaptez l'option `base` de Vite (déjà géré automatiquement par le workflow
-GitHub Pages fourni).
+### Chemin public (`base`)
+
+GitHub Pages sert le site depuis un sous-chemin (`/Loup/`) : l'option `base`
+de Vite vaut donc `/Loup/` pour les builds de production, et `/` en
+développement. Pour un hébergeur qui sert l'application à la racine du domaine
+(Netlify, Vercel, domaine personnalisé), surchargez-la avec la variable
+d'environnement `VITE_BASE` :
+
+```bash
+VITE_BASE=/ npm run build
+```
+
+(C'est déjà configuré dans `netlify.toml`.) Si vous renommez le dépôt,
+adaptez la constante `GITHUB_PAGES_BASE` dans `vite.config.ts`.
 
 ## 🛠️ Technologies utilisées
 

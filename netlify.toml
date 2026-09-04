@@ -2,6 +2,11 @@
   command = "npm run build"
   publish = "dist"
 
+# Netlify sert l'application à la racine du domaine : on annule le préfixe
+# `/Loup/` utilisé par défaut pour GitHub Pages.
+[build.environment]
+  VITE_BASE = "/"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
