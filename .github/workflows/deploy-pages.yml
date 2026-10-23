@@ -53,6 +53,12 @@ jobs:
     name: Déploiement
     needs: build
     runs-on: ubuntu-latest
+    # L'environnement `github-pages` n'accepte que la branche par défaut du
+    # dépôt. Sur toute autre branche, le job échouerait avant sa première étape ;
+    # on le saute donc, en ne gardant que la construction comme vérification.
+    # Dès que `main` devient la branche par défaut, le déploiement s'y fait
+    # automatiquement, sans modifier ce fichier.
+    if: github.ref_name == github.event.repository.default_branch
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

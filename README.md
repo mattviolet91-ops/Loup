@@ -208,13 +208,22 @@ Le projet est prêt pour un déploiement statique gratuit :
 
 - **GitHub Pages** (configuration par défaut) : le workflow
   `.github/workflows/deploy-pages.yml` construit (`npm ci` puis
-  `npm run build`) et publie le dossier `dist` à chaque push sur `main`, ainsi
-  qu'à la demande (`workflow_dispatch`). Il utilise `actions/configure-pages`
-  (avec `enablement: true`, qui active Pages automatiquement),
-  `actions/upload-pages-artifact` et `actions/deploy-pages`, avec les
-  permissions `pages: write` et `id-token: write`.
-  L'application est alors accessible sur
+  `npm run build`) et publie le dossier `dist`. Il se déclenche sur `main`, sur
+  la branche de développement, et à la demande (`workflow_dispatch`). Il utilise
+  `actions/configure-pages` (avec `enablement: true`, qui active Pages
+  automatiquement), `actions/upload-pages-artifact` et `actions/deploy-pages`,
+  avec les permissions `pages: write` et `id-token: write`.
+  L'application est accessible sur
   **<https://mattviolet91-ops.github.io/Loup/>**.
+
+  > **À savoir sur la branche publiée.** L'environnement `github-pages` de
+  > GitHub n'autorise le déploiement que depuis la **branche par défaut** du
+  > dépôt. Le job de construction tourne donc sur toutes les branches
+  > déclenchées, mais le job de déploiement est sauté ailleurs que sur la
+  > branche par défaut — sans quoi il échouerait avant même sa première étape.
+  > Pour que ce soit `main` qui publie le site, il suffit de la définir comme
+  > branche par défaut dans *Settings → General → Default branch* ; aucune
+  > modification du workflow n'est nécessaire.
 - **Netlify** : `netlify.toml` fourni (`npm run build`, dossier `dist`) — il
   suffit de connecter le dépôt sur [netlify.com](https://netlify.com).
 - **Vercel** : aucune configuration nécessaire, Vercel détecte
