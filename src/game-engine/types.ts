@@ -128,9 +128,17 @@ export interface HistoryEvent {
   timestamp: number;
 }
 
+/** Une phrase du narrateur : le texte affiché/synthétisé, et le clip enregistré correspondant. */
+export interface NarrationPhrase {
+  /** Nom du fichier (sans extension) dans `public/audio/`. */
+  clip: string;
+  text: string;
+}
+
 export interface NarrationLine {
   id: string;
   text: string;
+  clip: string;
   priority: 'normal' | 'high';
 }
 
@@ -166,6 +174,8 @@ export interface GameOptions {
   /** Hauteur de la voix (0 = très grave, 2 = très aiguë). */
   narrationPitch: number;
   narrationVoiceURI: string | null;
+  /** Utiliser la voix enregistrée (Paul K) plutôt que la synthèse vocale de l'appareil. */
+  useRecordedVoice: boolean;
   animationsEnabled: boolean;
   highContrast: boolean;
 }

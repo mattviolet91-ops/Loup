@@ -1,4 +1,4 @@
-import type { GameState, HistoryEventType, NarrationLine, Player } from './types';
+import type { GameState, HistoryEventType, NarrationLine, NarrationPhrase, Player } from './types';
 
 let idCounter = 0;
 export function makeId(prefix: string): string {
@@ -41,10 +41,17 @@ export function pushHistory(
   };
 }
 
-export function queueNarration(state: GameState, text: string, priority: NarrationLine['priority'] = 'normal'): GameState {
+export function queueNarration(
+  state: GameState,
+  phrase: NarrationPhrase,
+  priority: NarrationLine['priority'] = 'normal',
+): GameState {
   return {
     ...state,
-    narrationQueue: [...state.narrationQueue, { id: makeId('say'), text, priority }],
+    narrationQueue: [
+      ...state.narrationQueue,
+      { id: makeId('say'), text: phrase.text, clip: phrase.clip, priority },
+    ],
   };
 }
 

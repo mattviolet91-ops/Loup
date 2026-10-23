@@ -1,6 +1,7 @@
 import type {
   GameConfig,
   GameState,
+  NarrationPhrase,
   NightActionPayload,
   NightState,
   RoleId,
@@ -15,7 +16,7 @@ import { applyNightAction, narrationForStepStart } from './actionSystem';
 import { killPlayer } from './deathSystem';
 import { checkVictory } from './victorySystem';
 import { startVote, castVote, isVoteRoundComplete, resolveVoteRound, isVoteFinal } from './voteSystem';
-import { NARRATION, roleName } from './narrator';
+import { NARRATION } from './narrator';
 
 export type GameAction =
   | { type: 'NEW_GAME'; config: GameConfig; playerNames: string[]; seed?: number }
@@ -102,6 +103,7 @@ export function createInitialState(config: GameConfig, playerNames: string[], se
 
   state = pushHistory(state, 'GAME_STARTED', `Nouvelle partie : ${players.length} joueurs.`);
   state = queueNarration(state, NARRATION.gameStart(), 'high');
+  state = queueNarration(state, NARRATION.roleRevealStart());
   return state;
 }
 
@@ -197,8 +199,8 @@ function emptyNightState(): NightState {
 function announceCurrentStep(state: GameState): GameState {
   const kind = currentNightStepKind(state);
   if (!kind) return state;
-  const text = narrationForStepStart(state, kind);
-  return text ? queueNarration(state, text) : state;
+  const phrase = narrationForStepStart(state, kind);
+  return phrase ? queueNarration(state, phrase) : state;
 }
 
 function handleNightAction(state: GameState, payload: NightActionPayload): GameState {
@@ -273,7 +275,7 @@ function resolveNight(state: GameState): GameState {
   }
 
   next = pushHistory(next, 'NIGHT_DEATH', summarizeDeaths(next, next.lastCycleDeaths));
-  next = queueNarration(next, deathNarration(next, next.lastCycleDeaths));
+  next = queueNarration(next, deathNarration(next.lastCycleDeaths));
 
   if (hunterIds.length > 0) {
     return {
@@ -291,7 +293,7 @@ function finalizeToDayAnnouncement(state: GameState): GameState {
   if (victory) return applyVictory(state, victory);
   let next: GameState = { ...state, phase: 'DAY_ANNOUNCEMENT', dayNumber: state.dayNumber + 1, night: null };
   next = pushHistory(next, 'DAY_STARTED', `Jour ${next.dayNumber}.`);
-  next = queueNarration(next, NARRATION.dayBreaks(next.dayNumber), 'high');
+  next = queueNarration(next, NARRATION.dayBreaks(), 'high');
   return next;
 }
 
@@ -301,10 +303,8 @@ function summarizeDeaths(state: GameState, deadIds: string[]): string {
   return `Morts de la nuit : ${names.join(', ')}.`;
 }
 
-function deathNarration(state: GameState, deadIds: string[]): string {
-  if (deadIds.length === 0) return NARRATION.noOneDied();
-  const names = deadIds.map((id) => findPlayer(state, id).name);
-  return NARRATION.someoneDied(names);
+function deathNarration(deadIds: string[]): NarrationPhrase {
+  return deadIds.length === 0 ? NARRATION.noOneDied() : NARRATION.someoneDied(deadIds.length);
 }
 
 function handleEndDiscussion(state: GameState): GameState {
@@ -362,15 +362,14 @@ function resolveVoteOutcome(state: GameState): GameState {
   next = { ...next, lastCycleDeaths: [...next.lastCycleDeaths, ...res.deadPlayerIds] };
 
   if (!res.actuallyDied && target.roleId === 'IDIOT_DU_VILLAGE') {
-    next = queueNarration(next, NARRATION.idiotSpared(target.name), 'high');
+    next = queueNarration(next, NARRATION.idiotSpared(), 'high');
     return { ...next, phase: 'VOTE_RESULT' };
   }
 
   if (wasScapegoat) {
-    next = queueNarration(next, NARRATION.scapegoatEliminated(target.name), 'high');
+    next = queueNarration(next, NARRATION.scapegoatEliminated(), 'high');
   } else {
-    const revealedRole = next.config.options.revealRoleOnDeath ? roleName(target.roleId) : undefined;
-    next = queueNarration(next, NARRATION.voteResultElimination(target.name, revealedRole), 'high');
+    next = queueNarration(next, NARRATION.voteResultElimination(), 'high');
   }
 
   if (target.roleId === 'ANCIEN' && next.special.ancienPowersLost) {
@@ -411,7 +410,7 @@ function handleScapegoatChoice(state: GameState, voterIds: string[]): GameState 
 function handleHunterShoot(state: GameState, targetId: string): GameState {
   if (state.phase !== 'HUNTER_RESOLUTION' || !state.hunter) return state;
   const hunter = findPlayer(state, state.hunter.hunterId);
-  let next: GameState = queueNarration(state, NARRATION.hunterDies(hunter.name));
+  let next: GameState = queueNarration(state, NARRATION.hunterDies());
   const res = killPlayer(next, targetId, 'HUNTER');
   next = res.state;
   next = { ...next, lastCycleDeaths: [...next.lastCycleDeaths, ...res.deadPlayerIds] };
@@ -431,7 +430,7 @@ function handleHunterShoot(state: GameState, targetId: string): GameState {
 function applyVictory(state: GameState, victory: VictoryResult): GameState {
   let next: GameState = { ...state, phase: 'GAME_OVER', victory, night: null, vote: null, hunter: null };
   next = pushHistory(next, 'GAME_OVER', victory.message);
-  next = queueNarration(next, NARRATION.victory(victory.message), 'high');
+  next = queueNarration(next, NARRATION.victory(victory), 'high');
   return next;
 }
 

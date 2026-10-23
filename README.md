@@ -145,6 +145,44 @@ chargée une première fois, elle reste jouable **hors connexion** et peut être
 **installée** sur l'écran d'accueil d'un smartphone (Android/iOS) comme une
 application native.
 
+## 🔊 Voix du maître du jeu
+
+La narration passe par deux canaux, dans cet ordre :
+
+1. **Clips enregistrés** (`public/audio/<clip>.mp3`) — une voix de comédien, pour
+   l'ambiance. Chaque phrase du moteur porte un identifiant de clip fixe
+   (`01-ouverture`, `02-distribution`, …) ; la liste complète des 31 lignes et
+   leur texte exact se trouvent dans [`docs/narration-script.md`](docs/narration-script.md).
+2. **Synthèse vocale du téléphone** (Web Speech API) — repli automatique. Si un
+   clip est absent, illisible ou que la lecture échoue, la phrase est prononcée
+   par la voix de l'appareil, sans interrompre la partie.
+
+Le repli est transparent : l'application est entièrement jouable **sans aucun
+fichier audio**. Les clips présents sont utilisés, les autres non.
+
+### Ajouter ou remplacer les clips
+
+Deux façons de produire les fichiers :
+
+- **Un fichier par ligne** — exportez chaque phrase sous le nom attendu et
+  déposez-la dans `public/audio/`.
+- **Un seul gros MP3** — enregistrez les 31 lignes d'affilée, séparées par des
+  silences d'environ 2,5 s, puis découpez-le automatiquement :
+
+  ```bash
+  node scripts/split-narration.mjs mon-enregistrement.mp3
+  # seuils ajustables si le découpage ne tombe pas juste :
+  MIN_SILENCE=1.5 NOISE_FLOOR=-45 node scripts/split-narration.mjs mon-enregistrement.mp3
+  ```
+
+  Le script refuse d'écrire s'il ne détecte pas exactement 31 segments, pour
+  éviter de produire des clips décalés.
+
+Le réglage **« Voix enregistrée (comédien) »** des paramètres permet de
+désactiver les clips et de n'utiliser que la voix de l'appareil. Vitesse,
+hauteur et choix de voix ne s'appliquent qu'à cette voix de repli — les clips
+sont figés.
+
 ## ♿ Accessibilité
 
 - Contrastes vérifiés, option "Contraste élevé" dans les Paramètres.

@@ -38,6 +38,7 @@ export function useGame(fallbackOptions: GameOptions): UseGameResult {
     rate: options.narrationRate ?? DEFAULT_OPTIONS.narrationRate,
     pitch: options.narrationPitch ?? DEFAULT_OPTIONS.narrationPitch,
     voiceURI: options.narrationVoiceURI ?? DEFAULT_OPTIONS.narrationVoiceURI,
+    useRecordedVoice: options.useRecordedVoice ?? DEFAULT_OPTIONS.useRecordedVoice,
   });
 
   const narratorRef = useRef(narrator);
@@ -61,7 +62,7 @@ export function useGame(fallbackOptions: GameOptions): UseGameResult {
     for (const line of state.narrationQueue) {
       if (spokenIds.current.has(line.id)) continue;
       spokenIds.current.add(line.id);
-      narratorRef.current.speak(line.text);
+      narratorRef.current.speak({ clip: line.clip, text: line.text });
       setLastNarrationText(line.text);
       dispatch({ type: 'CONSUME_NARRATION', lineId: line.id });
     }

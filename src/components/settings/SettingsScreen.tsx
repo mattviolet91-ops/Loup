@@ -59,6 +59,16 @@ export function SettingsScreen({
             on={options.narrationEnabled}
             onToggle={() => onChange({ narrationEnabled: !options.narrationEnabled })}
           />
+          <Toggle
+            label="Voix enregistrée (comédien)"
+            on={options.useRecordedVoice}
+            onToggle={() => onChange({ useRecordedVoice: !options.useRecordedVoice })}
+          />
+          <p className="footer-note" style={{ margin: 0, textAlign: 'left' }}>
+            {options.useRecordedVoice
+              ? "La narration est jouée par un comédien. Les réglages de vitesse, de hauteur et de voix ci-dessous ne s'appliquent qu'à la voix de secours de l'appareil (utilisée si un enregistrement est indisponible)."
+              : "La narration utilise la voix de synthèse de l'appareil, réglable ci-dessous."}
+          </p>
           <div className="field">
             <label htmlFor="volume">Volume ({Math.round(options.narrationVolume * 100)}%)</label>
             <input

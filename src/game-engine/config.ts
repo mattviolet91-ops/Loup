@@ -15,6 +15,7 @@ export const DEFAULT_OPTIONS: GameOptions = {
   narrationRate: 0.92,
   narrationPitch: 0.8,
   narrationVoiceURI: null,
+  useRecordedVoice: true,
   animationsEnabled: true,
   highContrast: false,
 };

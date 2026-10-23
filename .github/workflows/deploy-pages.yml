@@ -2,7 +2,10 @@ name: Déploiement GitHub Pages
 
 on:
   push:
-    branches: [main]
+    # `main` est la cible demandée ; la branche de développement est également
+    # listée car c'est elle qui est actuellement la branche par défaut du dépôt,
+    # et l'environnement `github-pages` n'autorise que la branche par défaut.
+    branches: [main, claude/loup-garou-web-app-kv4rk6]
   workflow_dispatch:
 
 permissions:

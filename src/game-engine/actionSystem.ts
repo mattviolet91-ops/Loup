@@ -1,4 +1,4 @@
-import type { GameState, NightActionPayload, NightStepKind, RoleId } from './types';
+import type { GameState, NarrationPhrase, NightActionPayload, NightStepKind, RoleId } from './types';
 import { findPlayer, alivePlayers, aliveByRole } from './selectors';
 import { updatePlayer, queueNarration } from './stateHelpers';
 import { nextFloat, pick } from './rng';
@@ -163,7 +163,7 @@ function applyFlute(state: GameState, targetIds: string[]): ActionResult {
   return { state: next, advance: true };
 }
 
-export function narrationForStepStart(state: GameState, kind: NightStepKind): string {
+export function narrationForStepStart(state: GameState, kind: NightStepKind): NarrationPhrase | null {
   switch (kind) {
     case 'VOLEUR':
       return NARRATION.thiefTurn();
@@ -182,12 +182,12 @@ export function narrationForStepStart(state: GameState, kind: NightStepKind): st
     case 'SORCIERE': {
       const victimId = currentWolfVictimId(state);
       const victim = victimId ? alivePlayers(state).find((p) => p.id === victimId) : null;
-      return NARRATION.sorciereTurn(victim ? victim.name : null);
+      return NARRATION.sorciereTurn(victim !== null);
     }
     case 'JOUEUR_DE_FLUTE':
       return NARRATION.fluteTurn();
     default:
-      return '';
+      return null;
   }
 }
 
