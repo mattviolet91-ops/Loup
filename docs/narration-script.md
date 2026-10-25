@@ -71,10 +71,20 @@ du téléphone en plein milieu d'une phrase.
 « Fichier attendu ». Rien à découper, je les pose dans `public/audio/`.
 
 **Option B (plus rapide à générer)** — un seul MP3 contenant les 31 lignes
-**dans l'ordre**, générées en une fois depuis le bloc ci-dessous : les balises
-`<break time="2.5s" />` créent des silences nettement plus longs que les pauses
-internes des « … », ce qui me permet de découper le fichier automatiquement
-(ffmpeg, détection de silence) sans risque de coupure au mauvais endroit.
+**dans l'ordre**, générées en une fois depuis le bloc ci-dessous, puis découpé
+par `node scripts/split-narration.mjs <fichier.mp3>`.
+
+> **Ne comptez pas sur les balises `<break>`.** Sur l'enregistrement
+> effectivement utilisé, ElevenLabs les a ignorées : les 56 pauses du fichier
+> mesuraient toutes entre 0,40 s et 0,68 s, sans rien qui distingue une fin de
+> ligne d'un « … » interne, et deux passages de 10 s et 14 s n'en comportaient
+> aucune. Un découpage par simple détection de silence est donc impossible.
+>
+> C'est pourquoi `split-narration.mjs` aligne les lignes sur l'enveloppe
+> d'énergie du signal par programmation dynamique, en s'appuyant sur la durée
+> attendue de chaque ligne, puis vérifie son résultat et refuse d'écrire s'il
+> n'est pas sûr. Une pause nette entre les lignes reste utile — elle améliore
+> la qualité de l'alignement — mais n'est plus indispensable.
 
 ### Bloc prêt à coller (option B)
 

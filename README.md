@@ -147,41 +147,52 @@ application native.
 
 ## 🔊 Voix du maître du jeu
 
-La narration passe par deux canaux, dans cet ordre :
+La narration est assurée par une **voix de comédien enregistrée** (Paul K,
+conteur français), avec repli automatique sur la synthèse vocale de l'appareil :
 
-1. **Clips enregistrés** (`public/audio/<clip>.mp3`) — une voix de comédien, pour
-   l'ambiance. Chaque phrase du moteur porte un identifiant de clip fixe
-   (`01-ouverture`, `02-distribution`, …) ; la liste complète des 31 lignes et
-   leur texte exact se trouvent dans [`docs/narration-script.md`](docs/narration-script.md).
-2. **Synthèse vocale du téléphone** (Web Speech API) — repli automatique. Si un
-   clip est absent, illisible ou que la lecture échoue, la phrase est prononcée
-   par la voix de l'appareil, sans interrompre la partie.
+1. **Clips enregistrés** (`public/audio/<clip>.mp3`) — les 31 lignes de
+   narration sont fournies avec le dépôt et précachées par le service worker,
+   donc disponibles même hors connexion.
+2. **Synthèse vocale du téléphone** (Web Speech API) — utilisée si les clips
+   sont désactivés dans les réglages, ou si l'un d'eux s'avère illisible. La
+   partie n'est donc jamais muette.
 
-Le repli est transparent : l'application est entièrement jouable **sans aucun
-fichier audio**. Les clips présents sont utilisés, les autres non.
+Chaque phrase du moteur porte un identifiant de clip fixe (`01-ouverture`,
+`02-distribution`, …). Les textes sont listés dans
+[`docs/narration-script.md`](docs/narration-script.md) et leur source de vérité
+est [`scripts/narration-lines.json`](scripts/narration-lines.json), qu'un test
+compare au moteur pour interdire toute dérive.
 
-### Ajouter ou remplacer les clips
+Un clip ne contient donc jamais de prénom, de nom de rôle ni de numéro de jour :
+ces informations sont déjà à l'écran, ce qui permet d'enregistrer 100 % de la
+narration avec une seule voix.
 
-Deux façons de produire les fichiers :
+### Remplacer la voix
 
-- **Un fichier par ligne** — exportez chaque phrase sous le nom attendu et
-  déposez-la dans `public/audio/`.
-- **Un seul gros MP3** — enregistrez les 31 lignes d'affilée, séparées par des
-  silences d'environ 2,5 s, puis découpez-le automatiquement :
+Enregistrez les 31 lignes d'affilée, dans l'ordre du script, séparées par une
+pause nette, puis :
 
-  ```bash
-  node scripts/split-narration.mjs mon-enregistrement.mp3
-  # seuils ajustables si le découpage ne tombe pas juste :
-  MIN_SILENCE=1.5 NOISE_FLOOR=-45 node scripts/split-narration.mjs mon-enregistrement.mp3
-  ```
+```bash
+node scripts/split-narration.mjs mon-enregistrement.mp3
+```
 
-  Le script refuse d'écrire s'il ne détecte pas exactement 31 segments, pour
-  éviter de produire des clips décalés.
+Le script découpe l'enregistrement en 31 fichiers nommés. Il ne se contente pas
+de chercher des silences : les voix de synthèse gardent une réverbération qui
+empêche le niveau de redescendre entre les phrases, et les balises de pause ne
+sont pas toujours respectées. Il calcule donc une enveloppe d'énergie, prend ses
+minima locaux comme coupes possibles, et répartit les 31 lignes par
+programmation dynamique en s'appuyant sur la durée attendue de chacune (déduite
+de son nombre de caractères).
 
-Le réglage **« Voix enregistrée (comédien) »** des paramètres permet de
-désactiver les clips et de n'utiliser que la voix de l'appareil. Vitesse,
-hauteur et choix de voix ne s'appliquent qu'à cette voix de repli — les clips
-sont figés.
+Il vérifie ensuite son propre résultat de deux façons qu'il n'a pas utilisées
+pour aligner — les coupes doivent tomber dans les pauses trouvées séparément par
+`silencedetect`, et la pause interne d'une ligne doit se situer là où son texte
+porte un « … » — et **refuse d'écrire** si l'écart de durée dépasse 35 %, pour
+ne jamais produire de clips décalés.
+
+Le réglage **« Voix enregistrée (comédien) »** des paramètres permet de revenir
+à la voix de l'appareil. Vitesse, hauteur et choix de voix ne s'appliquent qu'à
+cette voix de repli — les clips sont figés.
 
 ## ♿ Accessibilité
 

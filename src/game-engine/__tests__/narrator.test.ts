@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { NARRATION } from '../narrator';
 import type { NarrationPhrase, VictoryResult } from '../types';
@@ -70,6 +72,29 @@ describe('narration', () => {
     const recorded = ALL_PHRASES.filter((p) => !p.clip.startsWith('2') || !p.clip.includes('victoire'));
     for (const phrase of recorded) {
       expect(phrase.text, phrase.clip).not.toMatch(/\d/);
+    }
+  });
+
+  it('reste synchronisé avec scripts/narration-lines.json', () => {
+    // Ce fichier sert de source au découpage de l'enregistrement
+    // (`scripts/split-narration.mjs`). S'il dérivait du moteur, les clips
+    // seraient découpés sur des textes qui ne sont plus dits : le test échoue
+    // donc dès qu'une phrase change ici sans être reportée là-bas.
+    const read = (p: string) => readFileSync(resolve(process.cwd(), p), 'utf8');
+    const script: { clip: string; text: string }[] = JSON.parse(read('scripts/narration-lines.json'));
+    const engine = new Map(ALL_PHRASES.map((p) => [p.clip, p.text]));
+
+    expect(script.map((l) => l.clip).sort()).toEqual([...engine.keys()].sort());
+
+    // Les messages de victoire viennent du moteur de victoire, pas du
+    // narrateur : `ALL_PHRASES` ne porte qu'un message factice pour eux.
+    const victorySource = read('src/game-engine/victorySystem.ts');
+    for (const line of script) {
+      if (line.clip.includes('victoire')) {
+        expect(victorySource, line.clip).toContain(line.text);
+      } else {
+        expect(line.text, line.clip).toBe(engine.get(line.clip));
+      }
     }
   });
 });

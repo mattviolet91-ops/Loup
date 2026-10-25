@@ -9,14 +9,18 @@ import { VitePWA } from 'vite-plugin-pwa';
  *   https://<utilisateur>.github.io/Loup/ : tous les assets doivent donc être
  *   préfixés par `/Loup/`.
  * - En développement (`npm run dev`), on reste à la racine `/`.
+ * - `npm run preview` relit le dossier `dist` déjà construit : il doit donc
+ *   employer le même préfixe que la construction, sans quoi l'`index.html`
+ *   produit réclame `/Loup/assets/…` à un serveur qui répond à la racine.
  * - `VITE_BASE` permet de surcharger ce choix pour un hébergeur qui sert
  *   l'application à la racine (Netlify, Vercel, domaine personnalisé) :
  *   `VITE_BASE=/ npm run build`.
  */
 const GITHUB_PAGES_BASE = '/Loup/';
 
-export default defineConfig(({ command }) => {
-  const base = process.env.VITE_BASE ?? (command === 'build' ? GITHUB_PAGES_BASE : '/');
+export default defineConfig(({ command, isPreview }) => {
+  const servesBuiltFiles = command === 'build' || isPreview;
+  const base = process.env.VITE_BASE ?? (servesBuiltFiles ? GITHUB_PAGES_BASE : '/');
 
   return {
     base,
@@ -50,7 +54,12 @@ export default defineConfig(({ command }) => {
           ],
         },
         workbox: {
-          globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
+          // Les clips de narration sont précachés : sans eux, une partie jouée
+          // hors connexion retomberait sur la voix de synthèse de l'appareil.
+          // Ils pèsent environ 2 Mo au total, soit un cran au-dessus de la
+          // limite par fichier de Workbox pour un seul d'entre eux.
+          globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2,mp3}'],
+          maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
         },
       }),
     ],

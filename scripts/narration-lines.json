@@ -1,0 +1,126 @@
+[
+  {
+    "clip": "01-ouverture",
+    "text": "Bienvenue à Thiercelieux… Un village paisible, en apparence. Que le sort en soit jeté."
+  },
+  {
+    "clip": "02-distribution",
+    "text": "Chacun va découvrir son rôle, en secret. Passez le téléphone… et ne montrez rien à personne."
+  },
+  {
+    "clip": "03-nuit-premiere",
+    "text": "La nuit tombe sur le village… Le silence se fait. Que tout le monde ferme les yeux."
+  },
+  {
+    "clip": "04-nuit-suivante",
+    "text": "La nuit revient sur Thiercelieux… Fermez les yeux, et priez pour voir l'aube."
+  },
+  {
+    "clip": "05-voleur",
+    "text": "Le Voleur se réveille… et convoite les deux cartes qui n'ont trouvé personne."
+  },
+  {
+    "clip": "06-cupidon",
+    "text": "Cupidon se réveille… Sa flèche va lier deux cœurs, pour le meilleur et pour le pire."
+  },
+  {
+    "clip": "07-amoureux",
+    "text": "Les Amoureux se reconnaissent en secret… puis se rendorment, liés à jamais."
+  },
+  {
+    "clip": "08-salvateur",
+    "text": "Le Salvateur se réveille… Sur qui étendra-t-il sa protection cette nuit ?"
+  },
+  {
+    "clip": "09-voyante",
+    "text": "La Voyante se réveille… Une seule âme lui livrera son secret."
+  },
+  {
+    "clip": "10-loups",
+    "text": "Les Loups-Garous se réveillent… Ils se reconnaissent, se comprennent, et choisissent leur proie."
+  },
+  {
+    "clip": "11-petite-fille",
+    "text": "La Petite Fille peut entrouvrir les yeux… mais gare à elle si un loup croise son regard."
+  },
+  {
+    "clip": "12-petite-fille-reperee",
+    "text": "Un loup a senti un regard dans l'ombre… La Petite Fille a été repérée !"
+  },
+  {
+    "clip": "13-sorciere",
+    "text": "La Sorcière se réveille… Elle découvre qui les crocs ont choisi cette nuit."
+  },
+  {
+    "clip": "14-sorciere-sans-victime",
+    "text": "La Sorcière se réveille… et contemple un village encore intact."
+  },
+  {
+    "clip": "15-flute",
+    "text": "Le Joueur de Flûte se réveille… Sa mélodie va envoûter deux nouvelles âmes."
+  },
+  {
+    "clip": "16-jour",
+    "text": "Le jour se lève sur le village… Chacun rouvre les yeux."
+  },
+  {
+    "clip": "17-aucun-mort",
+    "text": "Et pourtant… ce matin, personne ne manque à l'appel. Le village respire."
+  },
+  {
+    "clip": "18-un-mort",
+    "text": "Le village se réveille en deuil… L'un des siens ne verra pas ce jour se coucher."
+  },
+  {
+    "clip": "19-plusieurs-morts",
+    "text": "Le village se réveille en deuil… La nuit a emporté plusieurs des siens."
+  },
+  {
+    "clip": "20-vote",
+    "text": "L'heure du jugement a sonné. Que chacun désigne, en son âme et conscience, celui qu'il soupçonne."
+  },
+  {
+    "clip": "21-elimination",
+    "text": "Le village a tranché… Le sort de l'accusé est scellé."
+  },
+  {
+    "clip": "22-egalite",
+    "text": "Les voix se sont partagées… Un second tour départagera les accusés."
+  },
+  {
+    "clip": "23-egalite-sans-mort",
+    "text": "Le village n'a pas su choisir… Personne ne mourra aujourd'hui."
+  },
+  {
+    "clip": "24-bouc-emissaire",
+    "text": "Faute d'accord, la foule se retourne contre le Bouc Émissaire… qui paie pour tous."
+  },
+  {
+    "clip": "25-idiot",
+    "text": "C'était l'Idiot du Village ! On l'épargne en riant… mais on ne l'écoutera plus jamais voter."
+  },
+  {
+    "clip": "26-ancien",
+    "text": "Le village a tué l'Ancien de ses propres mains… Avec lui s'éteignent tous les pouvoirs des villageois."
+  },
+  {
+    "clip": "27-chasseur",
+    "text": "Le Chasseur s'effondre… Dans un dernier souffle, il arme son fusil."
+  },
+  {
+    "clip": "28-victoire-village",
+    "text": "Tous les Loups-Garous ont été éliminés : le Village remporte la partie !"
+  },
+  {
+    "clip": "29-victoire-loups",
+    "text": "Les Loups-Garous sont désormais aussi nombreux que le reste du village : ils remportent la partie !"
+  },
+  {
+    "clip": "30-victoire-amoureux",
+    "text": "Les Amoureux sont les deux derniers survivants : ils remportent la partie ensemble !"
+  },
+  {
+    "clip": "31-victoire-flute",
+    "text": "Le Joueur de Flûte a charmé tout le village : il remporte la partie seul !"
+  }
+]
